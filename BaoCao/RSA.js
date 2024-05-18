@@ -2,6 +2,7 @@ const dig = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-+";
 function get(id) {
     return document.getElementById(id);
 }
+// kiem tra so nto
 function checkPri(a) {
     if (a < 2) return false;
     for (var i = 2; i <= Math.sqrt(a); i++) {
@@ -9,6 +10,7 @@ function checkPri(a) {
     }
     return true;
 }
+// chuyen he nhi phan
 function binaryConvert(a) {
     var tmp = a;
     var bin = "";
@@ -21,11 +23,13 @@ function binaryConvert(a) {
     if (tmp === 3 || tmp === 2) bin = "0" + bin;
     return bin;
 }
+// tim uoc chung
 function gcd(a, b) {
     if (a == 0) return b;
     if (b == 0) return a;
     return gcd(b, a % b);
 }
+// binh phuong va nhan
 function squareAndMul(x, b, n) {
     var bin = binaryConvert(b);
     var p = 1;
@@ -70,6 +74,7 @@ function oCoLit(b, n) {
     return tin;
 }
 */
+// o co lit
 function oCoLit2(b, n) {
     let ri = n;
     let rin = b;
@@ -87,6 +92,7 @@ function oCoLit2(b, n) {
     if (tin < 0) tin = tin + n;
     return tin;
 }
+// tao so nguyen to ngau nhien
 function createPri() {
     var p = Math.floor(Math.random() * 10000);
     var q = Math.floor(Math.random() * 10000);
@@ -107,6 +113,7 @@ function createPri() {
     get("b").innerHTML = b;
     return { p: p, q: q, phiN: phiN, b: b, n: n };
 }
+// chuyen chuoi da cho ve mang so da ma hoa
 function encodeTextToInt(n, b) {
     var c = [];
     var content = get("textClear").value;
@@ -116,6 +123,7 @@ function encodeTextToInt(n, b) {
     }
     return c;
 }
+// chuyen mang so ve he 64
 function convert64(c) {
     var res = [];
     for (var number of c) {
@@ -129,6 +137,7 @@ function convert64(c) {
     }
     return res;
 }
+// chuyen he 64 ve he 10
 function convert10(c) {
     var res = [];
     for (var str of c) {
@@ -140,23 +149,28 @@ function convert10(c) {
     }
     return res;
 }
+// ma hoa
 function encode() {
     var pri = createPri();
     let c = encodeTextToInt(pri.n, pri.b);
-    console.log(c);
-    get("textCode").value = convert64(c);
+    let text = convert64(c);
+    let res = "";
+    for (var t of text) {
+        res += t;
+    }
+    get("textCode").value = res;
 }
+// chuyen noi dung
 function transfer() {
     get('textCode2').value = get('textCode').value;
 }
+// giai ma
 function decodeText(b, n, phiN) {
     let res = "";
     let a = oCoLit2(b, phiN);
-    let t = get("textCode2").value;
-    let c = t.split(",");
-    console.log(c);
-    let r = convert10(c);
-    console.log(r);
+    let c = encodeTextToInt(n, b);
+    let text = convert64(c);
+    let r = convert10(text);
     for (var i = 0; i < r.length; i++) {
         var num = squareAndMul(r[i], a, n);
         res += String.fromCodePoint(num);
@@ -172,99 +186,76 @@ function decode() {
     var dText = decodeText(b, n, phiN);
     get("textClear2").value = dText;
 }
-// read file
+// read file txt 
 function handleFileSelect(event) {
     // Take out the selected file
     const file = event.target.files[0];
     // create object to read content of file
     const reader = new FileReader();
-    // cut name file by point
-    const fileNameParts = file.name.split('.');
-    const fileExtension = fileNameParts[fileNameParts.length - 1].toLowerCase();
-
-    // Nếu phần mở rộng là 'txt', đó là một file văn bản
-    if (fileExtension === 'txt') {
-        // function to handle evnet
-        reader.onload = function (e) {
-            // Reading content is saved in variable content
-            const content = e.target.result;
-            get("textClear").value = content;
-        };
-        reader.readAsText(file);
-    } else {
-        alert("Văn bản không đúng định dạng");
-        // remove content of input file 
-        event.target.value = '';
-    }
+    reader.onload = function (e) {
+        const content = e.target.result;
+        get("textClear").value = content;
+    };
+    reader.readAsText(file);
 }
 get("inputFile").addEventListener('change', handleFileSelect);
-get("inputFile1").addEventListener('change', handleFileSelect);
-// convert to INT
-function convertStringToInt(P, base) {
-    let R = [];
-    for (let i = 0; i < P.length; i++) {
-        let c = P.charCodeAt(i).toString();
-        while (c.length !== base) {
-            c = '0' + c;
-        }
-        R.push(c);
-    }
-    return R;
-}
-// save file
-function saveTextAsFile() {
-    const textToWrite = get('textCode').value;
-    const fileNameToSaveAs = 'myfile.txt';
-
-    const blob = new Blob([textToWrite], { type: 'text/plain;charset=utf-8' });
-    saveAs(blob, fileNameToSaveAs);
-}
-// read docx file
-function get(id) {
-    return document.getElementById(id);
-}
-function readDocxFile() {
-    const fileInput = get('inputFile');
-    const file = fileInput.files[0];
-    if (!file) {
-        alert("Vui lòng chọn một file DOCX để đọc.");
-        return;
-    }
-
-    const reader = new FileReader();
-    reader.readAsArrayBuffer(file);
-    reader.onload = function (event) {
-        const arrayBuffer = event.target.result;
-        mammoth.convertToHtml({ arrayBuffer: arrayBuffer })
+// read dox file
+function readDocx(file) {
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        mammoth.extractRawText({ arrayBuffer: e.target.result })
             .then(displayResult)
-            .catch(function (err) {
-                console.log('Lỗi:', err);
+            .catch(err => {
+                console.error("Error reading docx file:", err);
             });
     };
+    reader.readAsArrayBuffer(file);
 }
 
 function displayResult(result) {
-    const html = result.value;
-    get('textClear').value = html;
+    document.getElementById('textClear').value = result.value;
 }
-// function readDocx(file) {
-//     var reader = new FileReader();
-//     reader.onload = function (e) {
-//         mammoth.convertToHtml({ arrayBuffer: e.target.result })
-//             .then(displayResult)
-//             .catch(err => {
-//                 console.error("Error reading docx file:", err);
-//             });
-//     };
-//     reader.readAsArrayBuffer(file);
-// }
+document.getElementById('inputFile').addEventListener('change', function (event) {
+    const file = event.target.files[0];
+    readDocx(file);
+});
+// save file text
+function saveTextAsFile() {
+    const textToWrite = get('textCode').value;
+    const fileNameToSaveAs = 'myfile.txt';
+    const blob = new Blob([textToWrite], { type: 'text/plain;charset=utf-8' });
+    saveAs(blob, fileNameToSaveAs);
+}
+// txt
+function handleFileSelect1(event) {
+    // Take out the selected file
+    const file = event.target.files[0];
+    // create object to read content of file
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const content = e.target.result;
+        get("textCode2").value = content;
+    };
+    reader.readAsText(file);
+}
+get("inputFile1").addEventListener('change', handleFileSelect1);
+// docx
+function readDocx1(file) {
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        mammoth.extractRawText({ arrayBuffer: e.target.result })
+            .then(displayResult)
+            .catch(err => {
+                console.error("Error reading docx file:", err);
+            });
+    };
+    reader.readAsArrayBuffer(file);
+}
 
-// function displayResult(result) {
-//     document.getElementById('textClear').innerHTML = result.value;
-// }
-
-// // Lắng nghe sự kiện khi người dùng chọn file
-// document.getElementById('inputFile').addEventListener('change', function (event) {
-//     const file = event.target.files[0];
-//     readDocx(file);
-// });
+function displayResult(result) {
+    document.getElementById('textClear2').value = result.value;
+}
+document.getElementById('inputFile1').addEventListener('change', function (event) {
+    const file = event.target.files[0];
+    readDocx1(file);
+});
