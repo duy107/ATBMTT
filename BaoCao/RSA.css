@@ -1,0 +1,47 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+body>h1 {
+    padding-top: 50px;
+    text-align: center;
+}
+
+.body {
+    display: flex;
+    margin-top: 30px;
+    justify-content: space-around;
+}
+.butEn{
+padding-left: 120px;
+}
+.encode {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+.content1, .content2 {
+    display: flex;
+    gap: 10px;
+}
+.but {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+textarea{
+    height: 70px;
+}
+.decode{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+.butDe{
+    padding-left: 120px;
+}
+.key{
+    display: block;
+}
