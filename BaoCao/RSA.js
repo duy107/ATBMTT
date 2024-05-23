@@ -118,7 +118,9 @@ function encodeTextToInt(n, b) {
     var c = [];
     var content = get("textClear").value;
     for (var i = 0; i < content.length; i++) {
+        // chuyen ky tu content[i] ve utf-8
         var utf_8 = content.codePointAt(i);
+        // tinh utf8^b%n
         c.push(squareAndMul(utf_8, b, n));
     }
     return c;
@@ -153,6 +155,7 @@ function convert10(c) {
 function encode() {
     var pri = createPri();
     let c = encodeTextToInt(pri.n, pri.b);
+    // text : 1 mang string sau khi chuyen cac so mang c sang he 64
     let text = convert64(c);
     let res = "";
     for (var t of text) {
@@ -168,14 +171,25 @@ function transfer() {
 function decodeText(b, n, phiN) {
     let res = "";
     let a = oCoLit2(b, phiN);
+    // 1 mang so sau khi ma hoa
     let c = encodeTextToInt(n, b);
+    // chuyen sang he 64
     let text = convert64(c);
-    let r = convert10(text);
-    for (var i = 0; i < r.length; i++) {
-        var num = squareAndMul(r[i], a, n);
-        res += String.fromCodePoint(num);
+    // luu noi dung tai o textCode2
+    let tmp = get('textCode2').value;
+    let tmpR = get('textCode').value;
+    if (tmpR != tmp) {
+        alert('Bản mã không khớp!');
+        tmp = get('textCode2').valuel;
+    } else {
+        // chuyen ve he 10
+        let r = convert10(text);
+        for (var i = 0; i < c.length; i++) {
+            var num = squareAndMul(c[i], a, n);
+            res += String.fromCodePoint(num);
+        }
+        return res;
     }
-    return res;
 }
 function decode() {
     let p = parseInt(get("p").innerHTML);
@@ -204,7 +218,9 @@ function readDocx(file) {
     var reader = new FileReader();
     reader.onload = function (e) {
         mammoth.extractRawText({ arrayBuffer: e.target.result })
-            .then(displayResult)
+            .then(result => {
+                document.getElementById('textClear').value = result.value;
+            })
             .catch(err => {
                 console.error("Error reading docx file:", err);
             });
@@ -212,16 +228,21 @@ function readDocx(file) {
     reader.readAsArrayBuffer(file);
 }
 
-function displayResult(result) {
-    document.getElementById('textClear').value = result.value;
-}
+// Lắng nghe sự kiện khi người dùng chọn file
 document.getElementById('inputFile').addEventListener('change', function (event) {
     const file = event.target.files[0];
     readDocx(file);
 });
+// DDDDDDDDDDDDDDDD
 // save file text
 function saveTextAsFile() {
     const textToWrite = get('textCode').value;
+    const fileNameToSaveAs = 'myfile.txt';
+    const blob = new Blob([textToWrite], { type: 'text/plain;charset=utf-8' });
+    saveAs(blob, fileNameToSaveAs);
+}
+function saveTextAsFile1() {
+    const textToWrite = get('textClear2').value;
     const fileNameToSaveAs = 'myfile.txt';
     const blob = new Blob([textToWrite], { type: 'text/plain;charset=utf-8' });
     saveAs(blob, fileNameToSaveAs);
@@ -244,7 +265,9 @@ function readDocx1(file) {
     var reader = new FileReader();
     reader.onload = function (e) {
         mammoth.extractRawText({ arrayBuffer: e.target.result })
-            .then(displayResult)
+            .then(result => {
+                document.getElementById('textCode2').value = result.value;
+            })
             .catch(err => {
                 console.error("Error reading docx file:", err);
             });
@@ -252,9 +275,7 @@ function readDocx1(file) {
     reader.readAsArrayBuffer(file);
 }
 
-function displayResult(result) {
-    document.getElementById('textClear2').value = result.value;
-}
+// Lắng nghe sự kiện khi người dùng chọn file
 document.getElementById('inputFile1').addEventListener('change', function (event) {
     const file = event.target.files[0];
     readDocx1(file);
