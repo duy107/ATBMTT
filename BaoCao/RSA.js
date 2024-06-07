@@ -78,7 +78,7 @@ function oCoLit(b, n) {
 function oCoLit2(b, n) {
     let ri = n;
     let rin = b;
-    let tmpR, tmpT;
+    let tmpR, tmpT, tin;
     let ti_1 = 0, ti = 1;
     while (rin > 1) {
         tin = ti_1 - ti * Math.floor(ri / rin);
@@ -202,7 +202,6 @@ function decode() {
 }
 // read file txt 
 function handleFileSelect(event) {
-    // Take out the selected file
     const file = event.target.files[0];
     // create object to read content of file
     const reader = new FileReader();
@@ -227,8 +226,6 @@ function readDocx(file) {
     };
     reader.readAsArrayBuffer(file);
 }
-
-// Lắng nghe sự kiện khi người dùng chọn file
 document.getElementById('inputFile').addEventListener('change', function (event) {
     const file = event.target.files[0];
     readDocx(file);
