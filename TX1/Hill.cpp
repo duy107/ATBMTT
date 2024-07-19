@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
+// tao ma tran khoa
 void getKeyMatrix(string s, int keyMatrix[][3])
 {
     int k = 0;
@@ -13,10 +14,9 @@ void getKeyMatrix(string s, int keyMatrix[][3])
 }
 void getMessMatrix(string text, int messMatrix[][1])
 {
-    int k = 0;
     for (int i = 0; i < 3; i++)
     {
-        messMatrix[i][0] = text[k++] % 65;
+        messMatrix[i][0] = text[i] % 65;
     }
 }
 void encrypt(int cipherMatrix[][1], int keyMatrix[][3], int messMatrix[][1])
@@ -44,7 +44,7 @@ void HillCipher(string key, string text)
     encrypt(cipherMatrix, keyMatrix, messMatrix);
     string res = "";
     for(int i = 0; i < 3; i++){
-        res += cipherMatrix[i][0] + 65;
+        res += cipherMatrix[i][0] + 'A';
     }
     cout << res << endl;
 }
